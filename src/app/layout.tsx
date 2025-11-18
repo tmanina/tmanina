@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import "./globals.css"
 import { Inter } from "next/font/google"
 import Script from "next/script"
+import { Footer } from "@/components/footer"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -38,8 +39,23 @@ export default function RootLayout({
         {/* Favicon */}
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
-      <body className={inter.className}>
-        {children}
+      <body className={`${inter.className} d-flex flex-column min-vh-100`}>
+        {/* المحتوى الرئيسي */}
+        <main className="flex-fill">
+          {children}
+        </main>
+
+        {/* الفوتر */}
+        <Footer />
+        {/* زر العودة للأعلى */}
+<button 
+  id="backToTopBtn"
+  className="back-to-top-btn"
+  aria-label="العودة للأعلى"
+>
+  <i className="fas fa-arrow-up"></i>
+</button>
+
 
         {/* Bootstrap JS */}
         <Script
@@ -48,6 +64,26 @@ export default function RootLayout({
           crossOrigin="anonymous"
           strategy="afterInteractive"
         />
+        <Script id="back-to-top-script" strategy="afterInteractive">
+  {`
+    const btn = document.getElementById('backToTopBtn');
+
+    // إظهار وإخفاء حسب التمرير
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 300) {
+        btn.style.display = 'flex';
+      } else {
+        btn.style.display = 'none';
+      }
+    });
+
+    // الحركة لأعلى
+    btn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  `}
+</Script>
+
       </body>
     </html>
   )

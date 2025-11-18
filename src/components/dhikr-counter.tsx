@@ -2,7 +2,7 @@
 
 import * as React from "react"
 
-// نفس المفتاح المستخدم في MorningEvening و Dashboard
+// نفس المفتاح المستخدم في Dashboard وغيره
 const PROGRESS_STORAGE_KEY = "tmanina_progress"
 
 type ProgressData = {
@@ -17,183 +17,124 @@ type DhikrOption = {
   defaultTarget: number
 }
 
-// الأذكار المتاحة للاختيار
 const DHIKR_OPTIONS: DhikrOption[] = [
-  {
-    id: "subhanallah",
-    text: "سُبْحَانَ اللَّهِ",
-    label: "تسبيحة",
-    defaultTarget: 33,
-  },
-  {
-    id: "alhamdulillah",
-    text: "الْحَمْدُ لِلَّهِ",
-    label: "تحميدة",
-    defaultTarget: 33,
-  },
-  {
-    id: "allahuakbar",
-    text: "اللَّهُ أَكْبَرُ",
-    label: "تكبيرة",
-    defaultTarget: 33,
-  },
-  {
-    id: "tahlil",
-    text: "لَا إِلَهَ إِلَّا اللَّهُ",
-    label: "تهليلة",
-    defaultTarget: 100,
-  },
-  {
-    id: "salat",
-    text: "اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ",
-    label: "صلاة على النبي ﷺ",
-    defaultTarget: 10,
-  },
-  {
-    id: "sbhan_bihamdih",
-    text: "سبحان الله وبحمده , سبحان الله العظيم",
-    label: "سبحان الله وبحمده",
-    defaultTarget: 100,
-  },
-  {
-    id: "la_elah_wa7dah",
-    text: "لا إله إلا الله وحده لا شريك له، له الملك وله الحمد وهو على كل شيء قدير",
-    label: "دعاء",
-    defaultTarget: 10,
-  },
-  {
-    id: "shahada",
-    text: "أشهد أن لا إله إلا الله وأشهد أن محمداً رسول الله",
-    label: "شهادة",
-    defaultTarget: 5,
-  },
-  {
-    id: "astaghfirullah",
-    text: "أستغفر الله",
-    label: "استغفار",
-    defaultTarget: 100,
-  },
-  {
-    id: "la_hawla",
-    text: "لا حول ولا قوة إلا بالله",
-    label: "دعاء",
-    defaultTarget: 100,
-  },
-  {
-    id: "dhun_nun",
-    text: "لا إله إلا أنت سبحانك إني كنت من الظالمين",
-    label: "دعاء",
-    defaultTarget: 100,
-  },
+  { id: "subhanallah", text: "سُبْحَانَ اللَّهِ", label: "تسبيحة", defaultTarget: 33 },
+  { id: "alhamdulillah", text: "الْحَمْدُ لِلَّهِ", label: "تحميدة", defaultTarget: 33 },
+  { id: "allahuakbar", text: "اللَّهُ أَكْبَرُ", label: "تكبيرة", defaultTarget: 33 },
+  { id: "tahlil", text: "لَا إِلَهَ إِلَّا اللَّهُ", label: "تهليلة", defaultTarget: 100 },
+  { id: "salat", text: "اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ", label: "صلاة على النبي ﷺ", defaultTarget: 10 },
+  { id: "sbhan_bihamdih", text: "سبحان الله وبحمده , سبحان الله العظيم", label: "سبحان الله وبحمده", defaultTarget: 100 },
+  { id: "la_elah_wa7dah", text: "لا إله إلا الله وحده لا شريك له...", label: "دعاء", defaultTarget: 10 },
+  { id: "shahada", text: "أشهد أن لا إله إلا الله...", label: "شهادة", defaultTarget: 5 },
+  { id: "astaghfirullah", text: "أستغفر الله", label: "استغفار", defaultTarget: 100 },
+  { id: "la_hawla", text: "لا حول ولا قوة إلا بالله", label: "دعاء", defaultTarget: 100 },
+  { id: "dhun_nun", text: "لا إله إلا أنت سبحانك إني كنت من الظالمين", label: "دعاء", defaultTarget: 100 },
 ]
 
-
-// زيادة عدد الأذكار في هذا اليوم وتخزينه في localStorage
+// حفظ في localStorage للتقدم اليومي
 function incrementDailyDhikr(step: number) {
   if (typeof window === "undefined") return
 
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
-  const dateKey = today.toISOString().slice(0, 10) // YYYY-MM-DD
-
+  const today = new Date().toISOString().slice(0, 10) // YYYY-MM-DD
   let data: ProgressData = { history: {} }
 
-  const raw = window.localStorage.getItem(PROGRESS_STORAGE_KEY)
+  const raw = localStorage.getItem(PROGRESS_STORAGE_KEY)
   if (raw) {
     try {
-      const parsed = JSON.parse(raw)
-      if (parsed && typeof parsed === "object" && parsed.history) {
-        data = parsed as ProgressData
-      }
-    } catch {
-      // ignore parse error
-    }
+      data = JSON.parse(raw)
+    } catch {}
   }
 
-  const prev = data.history[dateKey] ?? 0
-  data.history[dateKey] = prev + step
-  data.lastDate = dateKey
+  data.history[today] = (data.history[today] ?? 0) + step
+  data.lastDate = today
 
-  window.localStorage.setItem(PROGRESS_STORAGE_KEY, JSON.stringify(data))
-
-  // إشعار الـ Dashboard عشان يحدث نفسه
+  localStorage.setItem(PROGRESS_STORAGE_KEY, JSON.stringify(data))
   window.dispatchEvent(new Event("tmanina-progress-updated"))
 }
 
 export function DhikrCounter() {
-  const [selectedId, setSelectedId] = React.useState<string>(DHIKR_OPTIONS[0].id)
-  const selectedDhikr = React.useMemo(
-    () => DHIKR_OPTIONS.find((d) => d.id === selectedId) ?? DHIKR_OPTIONS[0],
-    [selectedId]
-  )
+  const [selectedId, setSelectedId] = React.useState(DHIKR_OPTIONS[0].id)
+  const selectedDhikr = DHIKR_OPTIONS.find((d) => d.id === selectedId)!
 
-  const [target, setTarget] = React.useState<number>(selectedDhikr.defaultTarget)
-  const [count, setCount] = React.useState<number>(0)
+  const [target, setTarget] = React.useState(selectedDhikr.defaultTarget)
+  const [count, setCount] = React.useState(0)
   const [totals, setTotals] = React.useState<Record<string, number>>({})
-  const remaining = Math.max(target - count, 0)
-  const totalForCurrent = totals[selectedId] ?? 0
-  const progress = target > 0 ? Math.min((count / target) * 100, 100) : 0
+  const [hasVibrated, setHasVibrated] = React.useState(false)
+  const [isPressed, setIsPressed] = React.useState(false)
 
-  // عند تغيير الذكر المختار: نرجع العداد للصفر ونضبط الهدف الافتراضي
+  const remaining = target - count
+  const totalForCurrent = totals[selectedId] ?? 0
+  const progress = Math.min((count / target) * 100, 100)
+
+  // إعادة الضبط عند تغيير الذكر
   React.useEffect(() => {
     setTarget(selectedDhikr.defaultTarget)
     setCount(0)
+    setHasVibrated(false)
   }, [selectedDhikr])
 
-  const handleChangeDhikr = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedId(event.target.value)
+  // تبديل الذكر
+  const handleChangeDhikr = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedId(e.target.value)
   }
 
-  const handleTasbeehClick = () => {
-    if (count >= target) {
-      // وصلنا للهدف، ما نزودش أكثر
-      return
-    }
+  // وظيفة التسبيح
+  const handleTasbeehTap = () => {
+    // أنيميشن
+    setIsPressed(true)
+    setTimeout(() => setIsPressed(false), 120)
 
-    // زيادة التقدم في localStorage (يُستخدم في Dashboard)
+    if (count >= target) return
+
     incrementDailyDhikr(1)
 
-    // تحديث عداد هذا الذكر
-    setCount((prev) => Math.min(prev + 1, target))
+    setCount((prev) => {
+      const newValue = prev + 1
 
-    // إجمالي هذا الذكر (لا يعتمد على الهدف)
+      // اهتزاز عند اكتمال الهدف لأول مرة
+      if (newValue === target && !hasVibrated) {
+        if (navigator.vibrate) navigator.vibrate(200)
+        setHasVibrated(true)
+      }
+
+      return newValue
+    })
+
     setTotals((prev) => ({
       ...prev,
       [selectedId]: (prev[selectedId] ?? 0) + 1,
     }))
   }
 
-  const handleResetCurrent = () => {
-    setCount(0)
-    // ممكن تسيب الـ total كما هو (إحصائية تراكمية)
+  const handleQuickTargetChange = (num: number) => {
+    setTarget(num)
+    if (count > num) setCount(num)
   }
 
-  const handleQuickTargetChange = (value: number) => {
-    setTarget(value)
-    if (count > value) {
-      setCount(value)
-    }
+  const handleResetCurrent = () => {
+    setCount(0)
+    setHasVibrated(false)
   }
 
   return (
     <div className="row justify-content-center">
       <div className="col-12 col-lg-8">
         <div className="card border-0 shadow-lg rounded-4 overflow-hidden card-hover">
+
           {/* الهيدر */}
-          <div className="gradient-bg text-white p-4">
-            <h2 className="h3 text-center mb-0 d-flex align-items-center justify-content-center gap-2">
+          <div className="gradient-bg text-white p-4 text-center">
+            <h3 className="mb-0 d-flex align-items-center justify-content-center gap-2">
               <i className="fas fa-hands-praying"></i>
               <span>سبحة إلكترونية</span>
-            </h2>
+            </h3>
           </div>
 
           {/* المحتوى */}
           <div className="card-body p-4 p-md-5 d-flex flex-column align-items-center gap-4">
+
             {/* اختيار الذكر */}
             <div className="w-100" style={{ maxWidth: "480px" }}>
-              <label className="form-label small text-body-secondary mb-1">
-                اختر الذكر
-              </label>
+              <label className="form-label small text-body-secondary mb-1">اختر الذكر</label>
               <select
                 className="form-select rounded-3"
                 value={selectedId}
@@ -207,38 +148,35 @@ export function DhikrCounter() {
               </select>
             </div>
 
-            {/* نص الذكر + معلومات صغيرة */}
-            <div
-              className="w-100 text-center p-3 rounded-4 bg-body-secondary bg-opacity-25"
-              style={{ maxWidth: "480px" }}
-            >
+            {/* الذكر + المعلومات */}
+            <div className="w-100 text-center p-3 rounded-4 bg-body-secondary bg-opacity-25" style={{ maxWidth: "480px" }}>
               <h3 className="h4 mb-2">{selectedDhikr.text}</h3>
-              <p className="small text-body-secondary mb-2">
-                {selectedDhikr.label}
-              </p>
-              <div className="d-flex justify-content-between small text-body-secondary mt-1">
-                <div>
-                  المتبقي: <span>{remaining}</span>
-                </div>
-                <div>
-                  إجمالي التسبيح: <span>{totalForCurrent}</span>
-                </div>
+              <p className="small text-body-secondary">{selectedDhikr.label}</p>
+
+              <div className="d-flex justify-content-between small text-body-secondary">
+                <div>المتبقي: {remaining}</div>
+                <div>إجمالي التسبيح: {totalForCurrent}</div>
               </div>
             </div>
 
-            {/* العداد الدائري */}
+            {/* الدائرة التفاعلية */}
             <div className="d-flex justify-content-center">
               <div
-                className="rounded-circle d-flex align-items-center justify-content-center shadow-lg bg-body-secondary position-relative"
+                onClick={handleTasbeehTap}
+                className={`rounded-circle d-flex align-items-center justify-content-center shadow-lg bg-body-secondary position-relative ${
+                  isPressed ? "scale-95" : "scale-100"
+                }`}
                 style={{
                   width: "220px",
                   height: "220px",
                   border: "8px solid var(--bs-body-bg)",
+                  transition: "transform 0.1s ease",
+                  cursor: "pointer",
+                  userSelect: "none",
+                  touchAction: "manipulation",
                 }}
               >
-                <span className="display-4 fw-bold gradient-text font-monospace">
-                  {count}
-                </span>
+                <span className="display-4 fw-bold gradient-text font-monospace">{count}</span>
                 <span className="position-absolute bottom-0 start-50 translate-middle-x small text-body-secondary mb-2">
                   الهدف: {target}
                 </span>
@@ -251,19 +189,17 @@ export function DhikrCounter() {
                 <span>0</span>
                 <span>{target}</span>
               </div>
+
               <div className="progress" style={{ height: "10px" }}>
                 <div
                   className="progress-bar gradient-bg"
                   role="progressbar"
                   style={{ width: `${progress}%` }}
-                  aria-valuenow={count}
-                  aria-valuemin={0}
-                  aria-valuemax={target}
                 ></div>
               </div>
             </div>
 
-            {/* أزرار اختيار هدف سريع */}
+            {/* أهداف جاهزة */}
             <div className="d-flex justify-content-center gap-2 flex-wrap">
               {[33, 99, 100].map((num) => (
                 <button
@@ -271,9 +207,7 @@ export function DhikrCounter() {
                   type="button"
                   onClick={() => handleQuickTargetChange(num)}
                   className={`btn btn-sm rounded-pill px-3 ${
-                    target === num
-                      ? "gradient-bg text-white"
-                      : "btn-outline-primary"
+                    target === num ? "gradient-bg text-white" : "btn-outline-primary"
                   }`}
                 >
                   {num}
@@ -281,39 +215,15 @@ export function DhikrCounter() {
               ))}
             </div>
 
-            {/* زر التسبيح + إعادة التعيين */}
-            <div
-              className="w-100 d-flex flex-column gap-2"
-              style={{ maxWidth: "480px" }}
+            {/* إعادة تعيين */}
+            <button
+              type="button"
+              onClick={handleResetCurrent}
+              className="btn btn-link text-body-secondary text-decoration-none small"
             >
-              <button
-                type="button"
-                onClick={handleTasbeehClick}
-                className="btn btn-lg w-100 gradient-bg text-white rounded-pill py-3 shadow d-flex align-items-center justify-content-center gap-2"
-                style={{ fontSize: "1.5rem" }}
-              >
-                <i className="fas fa-hand-point-up"></i>
-                <span>اضغط للتسبيح</span>
-              </button>
+              <i className="fas fa-rotate-right me-1"></i> إعادة تعيين عداد هذا الذكر
+            </button>
 
-              <div className="d-flex justify-content-between align-items-center small">
-                <button
-                  type="button"
-                  onClick={handleResetCurrent}
-                  className="btn btn-link text-body-secondary text-decoration-none p-0"
-                >
-                  <i className="fas fa-rotate-right me-1"></i>
-                  إعادة تعيين عداد هذا الذكر
-                </button>
-
-                {count >= target && (
-                  <span className="badge bg-success-subtle text-success-emphasis d-flex align-items-center gap-1">
-                    <i className="fas fa-check-circle"></i>
-                    اكتمل الهدف
-                  </span>
-                )}
-              </div>
-            </div>
           </div>
         </div>
       </div>

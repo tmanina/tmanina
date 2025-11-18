@@ -302,7 +302,7 @@ export function FloatingChat() {
               <div className="d-flex align-items-center gap-2">
                 <i className="fas fa-comments"></i>
                 <div className="d-flex flex-column">
-                  <span className="fw-semibold">المساعد الروحاني</span>
+                  <span className="fw-semibold">المساعد الديني</span>
                   <small className="opacity-75">
                     اسأل عن الأذكار، الصلاة، القرآن...
                   </small>
@@ -469,7 +469,7 @@ export function FloatingChat() {
         onClick={handleToggle}
         className="btn btn-lg rounded-circle gradient-bg text-white shadow-lg position-fixed bottom-0 end-0 m-3 d-flex align-items-center justify-content-center"
         style={{ width: "60px", height: "60px", zIndex: 1050 }}
-        aria-label="المساعد الروحاني"
+        aria-label="المساعد الديني"
       >
         <i className={`fas ${isOpen ? "fa-times" : "fa-comment-dots"} fs-4`}></i>
       </button>
