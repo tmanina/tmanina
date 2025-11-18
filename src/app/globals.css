@@ -317,7 +317,7 @@ html[data-bs-theme="dark"] .home-hero-gradient {
 /* على الموبايل + التابلت — نرفعه للأعلى قليلًا بسبب الـ bottom nav */
 @media (max-width: 992px) {
   .floating-chat-btn {
-    bottom: 70px;     /* رفعه فوق bottom navigation */
+    bottom: 57px;     /* رفعه فوق bottom navigation */
   }
 }
 
