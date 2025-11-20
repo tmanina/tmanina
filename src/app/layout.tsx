@@ -3,7 +3,6 @@ import "./globals.css"
 import { Inter } from "next/font/google"
 import Script from "next/script"
 import { Footer } from "@/components/footer"
-import { Navigation } from "@/components/navigation"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -18,7 +17,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="ar" dir="rtl" data-bs-theme="light">
+    <html lang="ar" dir="rtl" data-bs-theme="dark">
       <head>
         {/* Bootstrap RTL */}
         <link
@@ -42,15 +41,9 @@ export default function RootLayout({
       </head>
 
       <body className={`${inter.className} d-flex flex-column min-vh-100`}>
-        {/* الـ Navigation (أعلى الصفحة + Bottom Nav للموبايل) */}
-        <Navigation />
-
         {/* المحتوى الرئيسي */}
         <main className="flex-fill">
-          {/* مسافة أسفل للموبايل عشان الـ Bottom Nav ما يغطيش المحتوى */}
-          <div style={{ paddingBottom: "70px" }}>
-            {children}
-          </div>
+          {children}
         </main>
 
         {/* Footer يظهر فقط على الـ Desktop */}

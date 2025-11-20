@@ -7,6 +7,8 @@ type City = "cairo" | "assiut" | "new-valley"
 interface CityInfo {
   name: string
   englishName: string
+  latitude: number
+  longitude: number
 }
 
 interface PrayerTimesData {
@@ -19,9 +21,9 @@ interface PrayerTimesData {
 }
 
 const egyptCities: Record<City, CityInfo> = {
-  cairo: { name: "القاهرة", englishName: "Cairo" },
-  assiut: { name: "أسيوط", englishName: "Assiut" },
-  "new-valley": { name: "الوادي الجديد", englishName: "Al Wadi al Jadid" },
+  cairo: { name: "القاهرة", englishName: "Cairo", latitude: 30.0444, longitude: 31.2357 },
+  assiut: { name: "أسيوط", englishName: "Assiut", latitude: 27.1783, longitude: 31.1859 },
+  "new-valley": { name: "الوادي الجديد", englishName: "Al Wadi al Jadid", latitude: 25.4514, longitude: 30.5461 }, // Kharga Oasis coordinates approx
 }
 
 interface PrayerTimesProps {
@@ -32,26 +34,29 @@ interface PrayerTimesProps {
 // نستخدم أسماء مختلفة داخليًا لتفادي تحذير "unused props"
 export function PrayerTimes({ country: _country, city: _city }: PrayerTimesProps) {
   const [currentTime, setCurrentTime] = React.useState(new Date())
-  const [selectedCity, setSelectedCity] = React.useState<City>("cairo")
+  const [selectedCity, setSelectedCity] = React.useState<City>("new-valley")
   const [prayerTimesData, setPrayerTimesData] = React.useState<PrayerTimesData | null>(null)
+  const [qiblaDirection, setQiblaDirection] = React.useState<number>(0)
   const [loading, setLoading] = React.useState(true)
   const [isClient, setIsClient] = React.useState(false)
 
-  // Fetch prayer times from API
+  // Fetch prayer times and Qibla from API
   React.useEffect(() => {
-    const fetchPrayerTimes = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true)
         const cityInfo = egyptCities[selectedCity]
-        const response = await fetch(
+
+        // Fetch Prayer Times
+        const prayerResponse = await fetch(
           `https://api.aladhan.com/v1/timingsByCity?city=${encodeURIComponent(
             cityInfo.englishName
           )}&country=Egypt&method=5`
         )
-        const data = await response.json()
+        const prayerData = await prayerResponse.json()
 
-        if (data.code === 200 && data.data.timings) {
-          const timings = data.data.timings
+        if (prayerData.code === 200 && prayerData.data.timings) {
+          const timings = prayerData.data.timings
           setPrayerTimesData({
             fajr: timings.Fajr,
             sunrise: timings.Sunrise,
@@ -61,8 +66,19 @@ export function PrayerTimes({ country: _country, city: _city }: PrayerTimesProps
             isha: timings.Isha,
           })
         }
+
+        // Fetch Qibla Direction
+        const qiblaResponse = await fetch(
+          `https://api.aladhan.com/v1/qibla/${cityInfo.latitude}/${cityInfo.longitude}`
+        )
+        const qiblaData = await qiblaResponse.json()
+
+        if (qiblaData.code === 200 && qiblaData.data) {
+          setQiblaDirection(Math.round(qiblaData.data.direction))
+        }
+
       } catch (error) {
-        console.error("Error fetching prayer times:", error)
+        console.error("Error fetching data:", error)
         // Fallback to static times if API fails
         setPrayerTimesData({
           fajr: "04:45",
@@ -72,12 +88,13 @@ export function PrayerTimes({ country: _country, city: _city }: PrayerTimesProps
           maghrib: "17:55",
           isha: "19:15",
         })
+        setQiblaDirection(136) // Default approx direction
       } finally {
         setLoading(false)
       }
     }
 
-    fetchPrayerTimes()
+    fetchData()
   }, [selectedCity])
 
   React.useEffect(() => {
@@ -219,14 +236,14 @@ export function PrayerTimes({ country: _country, city: _city }: PrayerTimesProps
                       onChange={(e) => setSelectedCity(e.target.value as City)}
                       style={{ backdropFilter: "blur(10px)" }}
                     >
+                      <option value="new-valley" className="text-dark">
+                        الوادي الجديد
+                      </option>
                       <option value="cairo" className="text-dark">
                         القاهرة
                       </option>
                       <option value="assiut" className="text-dark">
                         أسيوط
-                      </option>
-                      <option value="new-valley" className="text-dark">
-                        الوادي الجديد
                       </option>
                     </select>
                   </div>
@@ -327,9 +344,8 @@ export function PrayerTimes({ country: _country, city: _city }: PrayerTimesProps
               {prayerTimes.map((prayer, index) => (
                 <div key={prayer.name} className="col-12 col-sm-6 col-lg-4">
                   <div
-                    className={`card border-0 shadow card-hover h-100 bg-body ${
-                      index === nextPrayerIndex ? "border-3 border-success" : ""
-                    }`}
+                    className={`card border-0 shadow card-hover h-100 bg-body ${index === nextPrayerIndex ? "border-3 border-success" : ""
+                      }`}
                     style={
                       index === nextPrayerIndex
                         ? { borderColor: prayer.color, borderWidth: "3px", borderStyle: "solid" }
@@ -406,11 +422,17 @@ export function PrayerTimes({ country: _country, city: _city }: PrayerTimesProps
                         className="rounded-circle bg-body-secondary d-flex align-items-center justify-content-center"
                         style={{ width: "60px", height: "60px" }}
                       >
-                        <i className="fas fa-location-arrow text-teal-600 fs-3"></i>
+                        <i
+                          className="fas fa-location-arrow text-teal-600 fs-3"
+                          style={{
+                            transform: `rotate(${qiblaDirection - 45}deg)`, // -45 because icon points NE by default
+                            transition: 'transform 1s ease-out'
+                          }}
+                        ></i>
                       </div>
                       <div>
-                        <p className="h4 mb-0 fw-bold">45°</p>
-                        <p className="text-body-secondary small mb-0">شمال شرق</p>
+                        <p className="h4 mb-0 fw-bold">{qiblaDirection}°</p>
+                        <p className="text-body-secondary small mb-0">من الشمال</p>
                       </div>
                     </div>
                   </div>

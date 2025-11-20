@@ -92,7 +92,7 @@ export function IslamicCalendar() {
             onClick={() => changeMonth(-1)}
             aria-label="الشهر السابق"
           >
-            <i className="bi bi-chevron-right" />
+            <i className="fas fa-chevron-right" />
           </button>
 
           {/* Month titles */}
@@ -102,17 +102,17 @@ export function IslamicCalendar() {
             </div>
             <div className="small text-muted">{hijriMonthYear}</div>
           </div> */}
-{/* Today summary */}
-        <div className="mt-3 p-2 rounded-3 bg-body-tertiary d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2 small">
-          <div className="fw-semibold text-primary-emphasis">
-            تاريخ اليوم (ميلادي): <span className="text-body">{todayGregorianFull}</span>
+          {/* Today summary */}
+          <div className="mt-3 p-2 rounded-3 bg-body-tertiary d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2 small">
+            <div className="fw-semibold text-primary-emphasis">
+              تاريخ اليوم (ميلادي): <span className="text-body">{todayGregorianFull}</span>
+            </div>
+            <br></br>
+            <div className="fw-semibold text-success-emphasis">
+              تاريخ اليوم (هجري): <span className="text-body">{todayHijriFull}</span>
+            </div>
           </div>
-          <br></br>
-          <div className="fw-semibold text-success-emphasis">
-            تاريخ اليوم (هجري): <span className="text-body">{todayHijriFull}</span>
-          </div>
-        </div>
-        <div className="text-center flex-grow-1">
+          <div className="text-center flex-grow-1">
             <div className="fw-bold fs-5 text-primary-emphasis">
               {gregorianMonthYear}
             </div>
@@ -125,7 +125,7 @@ export function IslamicCalendar() {
             onClick={() => changeMonth(1)}
             aria-label="الشهر التالي"
           >
-            <i className="bi bi-chevron-left" />
+            <i className="fas fa-chevron-left" />
           </button>
         </div>
       </div>
@@ -163,7 +163,7 @@ export function IslamicCalendar() {
                 </div>
                 {cell.isToday && (
                   <span className="today-badge badge rounded-pill bg-light text-primary-emphasis position-absolute top-0 start-50 translate-middle-x">
-                    
+
                   </span>
                 )}
               </button>
@@ -171,7 +171,7 @@ export function IslamicCalendar() {
           })}
         </div>
 
-        
+
       </div>
     </div>
   )

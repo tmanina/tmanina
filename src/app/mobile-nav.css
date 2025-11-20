@@ -1,0 +1,53 @@
+/* Navigation Card Buttons - Hover Effects */
+.nav-card-btn {
+    transition: all 0.3s ease !important;
+    background: var(--bs-body-secondary) !important;
+}
+
+.nav-card-btn:hover {
+    transform: translateY(-5px) !important;
+    box-shadow: 0 15px 35px rgba(212, 165, 116, 0.25) !important;
+    background: linear-gradient(135deg, rgba(212, 165, 116, 0.1), rgba(125, 157, 127, 0.1)) !important;
+}
+
+.nav-card-btn:active {
+    transform: translateY(-2px) !important;
+}
+
+/* Mobile Navigation Styles */
+@media (max-width: 767px) {
+    .main-tabs-wrapper {
+        margin-left: -1rem;
+        margin-right: -1rem;
+    }
+
+    .main-tabs {
+        overflow-x: auto;
+        overflow-y: hidden;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+        padding: 0.5rem !important;
+    }
+
+    .main-tabs::-webkit-scrollbar {
+        height: 4px;
+    }
+
+    .main-tabs .nav-item {
+        flex: 0 0 auto;
+    }
+
+    .main-tabs .nav-link {
+        padding: 0.75rem 1rem !important;
+        font-size: 0.9rem;
+    }
+}
+
+/* Tablet Styles */
+@media (min-width: 768px) and (max-width: 991px) {
+    .main-tabs .nav-link {
+        font-size: 0.95rem;
+        padding: 0.75rem 1.25rem;
+    }
+}

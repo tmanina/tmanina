@@ -18,7 +18,7 @@ interface ChatMessage {
 
 const systemPrompt =
   "أنت مساعد ديني لتطبيق طمانينة (tmanina)."
-  // متخصص في الإجابة على الأسئلة الدينية الإسلامية. يجب أن تستند إجاباتك فقط إلى مواقع دينية موثوقة، مثل: الدرر السنية (dorar.net)، إسلام ويب (islamweb.net)، الإسلام سؤال وجواب (islamqa.info)، طريق الإسلام (ar.islamway.net)، شبكة الألوكة (alukah.net)، موقع ابن باز (binbaz.org.sa)، موقع ابن عثيمين (binothaimeen.net)، دار الإفتاء المصرية (dar-alifta.org)، الرئاسة العامة للبحوث العلمية والإفتاء (alifta.gov.sa)، ومصحف جامعة الملك سعود (quran.ksu.edu.sa). لا تستخدم ولا تذكر أي مصادر من مواقع عامة أو غير دينية. إذا لم تجد إجابة في هذه المواقع فقط فقل: (لا أعلم يقينًا، يُفضَّل سؤال أهل العلم مباشرة). اذكر مصادرك الدينية دائمًا إن أمكن، وكن مختصرًا ومحترمًا."
+// متخصص في الإجابة على الأسئلة الدينية الإسلامية. يجب أن تستند إجاباتك فقط إلى مواقع دينية موثوقة، مثل: الدرر السنية (dorar.net)، إسلام ويب (islamweb.net)، الإسلام سؤال وجواب (islamqa.info)، طريق الإسلام (ar.islamway.net)، شبكة الألوكة (alukah.net)، موقع ابن باز (binbaz.org.sa)، موقع ابن عثيمين (binothaimeen.net)، دار الإفتاء المصرية (dar-alifta.org)، الرئاسة العامة للبحوث العلمية والإفتاء (alifta.gov.sa)، ومصحف جامعة الملك سعود (quran.ksu.edu.sa). لا تستخدم ولا تذكر أي مصادر من مواقع عامة أو غير دينية. إذا لم تجد إجابة في هذه المواقع فقط فقل: (لا أعلم يقينًا، يُفضَّل سؤال أهل العلم مباشرة). اذكر مصادرك الدينية دائمًا إن أمكن، وكن مختصرًا ومحترمًا."
 
 const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY ?? ""
 const apiUrl = apiKey
@@ -65,13 +65,13 @@ const isPromptMetaQuestion = (text: string) => {
     t.includes("إيش البرومبت") ||
     t.includes("ايه البرومبت") ||
     t.includes("ما هي إعداداتك الداخلية") ||
-    t.includes("ما هو البارامتر الذي تعمل به")||
+    t.includes("ما هو البارامتر الذي تعمل به") ||
     t.includes("ما هو إعداداتك") ||
     t.includes("ما إعداداتك") ||
     t.includes("ما  إعداداتك") ||
     t.includes(" إعداداتك") ||
 
-    t.includes("ما هي إعداداتك") 
+    t.includes("ما هي إعداداتك")
 
 
   )
@@ -300,13 +300,13 @@ export function FloatingChat() {
           className="position-fixed end-0 m-3 animate-fade-in"
           style={{
             zIndex: 1040,
-            bottom: "88px", // مرفوعة فوق زر الشات العائم
+            bottom: "108px", // Increased by 20px (was 88px)
             maxWidth: "380px",
             width: "calc(100vw - 2rem)",
           }}
         >
           <div className="card border-0 shadow-lg rounded-4 bg-body">
-            {/* الهيدر */}
+            {/* ... (header content remains same, omitted for brevity in replacement if not changing) ... */}
             <div className="card-header gradient-bg text-white d-flex align-items-center justify-content-between p-3">
               <div className="d-flex align-items-center gap-2">
                 <i className="fas fa-comments"></i>
@@ -337,16 +337,14 @@ export function FloatingChat() {
                 {messages.map((msg) => (
                   <div
                     key={msg.id}
-                    className={`d-flex mb-2 ${
-                      msg.sender === "user" ? "justify-content-end" : "justify-content-start"
-                    }`}
+                    className={`d-flex mb-2 ${msg.sender === "user" ? "justify-content-end" : "justify-content-start"
+                      }`}
                   >
                     <div
-                      className={`p-2 rounded-3 ${
-                        msg.sender === "user"
+                      className={`p-2 rounded-3 ${msg.sender === "user"
                           ? "bg-primary text-white rounded-bottom-0"
                           : "bg-body-secondary text-body rounded-top-0"
-                      }`}
+                        }`}
                       style={{ maxWidth: "80%", whiteSpace: "pre-wrap" }}
                     >
                       {msg.sender === "user" ? (
@@ -452,7 +450,7 @@ export function FloatingChat() {
               >
                 <input
                   type="text"
-                  className="form-control form-control-sm rounded-3"
+                  className="form-control form-control-lg rounded-3"
                   placeholder="اكتب سؤالك هنا..."
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
@@ -460,11 +458,11 @@ export function FloatingChat() {
                 />
                 <button
                   type="submit"
-                  className="btn btn-sm btn-primary rounded-3 d-flex align-items-center justify-content-center"
+                  className="btn btn-primary rounded-3 d-flex align-items-center justify-content-center"
                   disabled={isLoading || !input.trim()}
-                  style={{ minWidth: "40px" }}
+                  style={{ minWidth: "50px", height: "48px" }}
                 >
-                  <i className="fas fa-paper-plane"></i>
+                  <i className="fas fa-paper-plane fs-5"></i>
                 </button>
               </form>
             </div>
@@ -473,13 +471,13 @@ export function FloatingChat() {
       )}
 
       <button
-  type="button"
-  onClick={handleToggle}
-  className="floating-chat-btn btn btn-lg rounded-circle gradient-bg text-white shadow-lg position-fixed d-flex align-items-center justify-content-center"
-  aria-label="المساعد الديني"
->
-  <i className={`fas ${isOpen ? "fa-times" : "fa-comment-dots"} fs-4`}></i>
-</button>
+        type="button"
+        onClick={handleToggle}
+        className="floating-chat-btn btn btn-lg rounded-circle gradient-bg text-white shadow-lg position-fixed d-flex align-items-center justify-content-center"
+        aria-label="المساعد الديني"
+      >
+        <i className={`fas ${isOpen ? "fa-times" : "fa-comment-dots"} fs-4`}></i>
+      </button>
 
 
     </>

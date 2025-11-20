@@ -3,11 +3,15 @@
 import * as React from "react"
 
 export function Header() {
-  const [isDark, setIsDark] = React.useState(false)
+  const [isDark, setIsDark] = React.useState(true)
 
   React.useEffect(() => {
     const theme = localStorage.getItem("theme")
-    if (theme === "dark") {
+    if (theme === "light") {
+      document.documentElement.setAttribute("data-bs-theme", "light")
+      setIsDark(false)
+    } else {
+      // Default to dark if no theme is saved or if saved theme is dark
       document.documentElement.setAttribute("data-bs-theme", "dark")
       setIsDark(true)
     }

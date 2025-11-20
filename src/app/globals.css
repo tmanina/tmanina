@@ -1,15 +1,30 @@
 /* Custom styles */
 :root {
-  --primary-gradient: linear-gradient(135deg, #14b8a6 0%, #0891b2 100%);
-  --teal-primary: #14b8a6;
-  --teal-dark: #0d9488;
-  --cyan-primary: #0891b2;
+  /* Primary palette - warm gold & sage green */
+  --primary-gold: #d4a574;
+  --primary-dark-gold: #b8885a;
+  --sage-green: #7d9d7f;
+  --sage-dark: #5a7c5c;
+
+  /* Secondary palette - indigo & cream */
+  --indigo-primary: #4a5d7e;
+  --indigo-light: #6b8cae;
+  --cream-bg: #f9f6f2;
+  --cream-card: #ffffff;
+
+  /* Gradients */
+  --primary-gradient: linear-gradient(135deg, #d4a574 0%, #7d9d7f 100%);
+  --hero-gradient: linear-gradient(135deg, #4a5d7e 0%, #7d9d7f 100%);
 }
 
 body {
   font-family: Arial, Helvetica, sans-serif;
-  background: linear-gradient(135deg, #aeb1b0 0%, #cfd5d5 100%);
+  background: linear-gradient(135deg, #f9f6f2 0%, #ede8e0 100%);
   min-height: 100vh;
+}
+
+[data-bs-theme="dark"] body {
+  background: linear-gradient(135deg, #212529 0%, #343a40 100%);
 }
 
 .gradient-bg {
@@ -30,7 +45,7 @@ body {
 
 .card-hover:hover {
   transform: translateY(-4px);
-  box-shadow: 0 20px 25px -5px rgba(20, 184, 166, 0.1), 0 10px 10px -5px rgba(20, 184, 166, 0.04) !important;
+  box-shadow: 0 20px 25px -5px rgba(212, 165, 116, 0.2), 0 10px 10px -5px rgba(212, 165, 116, 0.1) !important;
 }
 
 .animate-fade-in {
@@ -42,6 +57,7 @@ body {
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -62,20 +78,20 @@ html {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #d4a574;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #b8885a;
 }
 
 .text-teal-600 {
-  color: var(--teal-primary);
+  color: var(--primary-gold);
 }
 
 .bg-teal-600 {
-  background-color: var(--teal-primary);
+  background-color: var(--primary-gold);
 }
 
 .text-muted {
@@ -83,7 +99,7 @@ html {
 }
 
 .nav-pills .nav-link.active {
-  background: linear-gradient(135deg, #14b8a6 0%, #0891b2 100%);
+  background: linear-gradient(135deg, #d4a574 0%, #b8885a 100%);
   color: white;
 }
 
@@ -95,6 +111,12 @@ html {
 .nav-pills .nav-link:hover:not(.active) {
   background: #f8f9fa;
 }
+
+[data-bs-theme="dark"] .nav-pills .nav-link:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--bs-light);
+}
+
 /* Islamic calendar styles */
 .islamic-calendar {
   direction: rtl;
@@ -104,7 +126,7 @@ html {
 }
 
 .islamic-calendar .card-header {
-  background: linear-gradient(135deg, #e9f3ff, #f4ecff);
+  background: linear-gradient(135deg, #f9f6f2, #f0ebe3);
   border-bottom: none;
 }
 
@@ -122,15 +144,15 @@ html {
 }
 
 .islamic-calendar .calendar-day:hover {
-  background-color: #e9f2ff;
-  box-shadow: 0 0.35rem 0.75rem rgba(13, 110, 253, 0.15);
+  background-color: #fef9f3;
+  box-shadow: 0 0.35rem 0.75rem rgba(212, 165, 116, 0.25);
   transform: translateY(-1px);
 }
 
 .islamic-calendar .calendar-day.day-today {
-  background: linear-gradient(135deg, #0d6efd, #6f42c1);
-  color: #f8f9fa;
-  box-shadow: 0 0.55rem 1.2rem rgba(13, 110, 253, 0.4);
+  background: linear-gradient(135deg, #d4a574, #b8885a);
+  color: #ffffff;
+  box-shadow: 0 0.55rem 1.2rem rgba(212, 165, 116, 0.4);
 }
 
 .islamic-calendar .calendar-day.day-today .small {
@@ -146,6 +168,7 @@ html {
   padding-inline: 0.45rem;
   padding-block: 0.15rem;
 }
+
 /* ==============================
    Islamic Calendar Light / Dark Theme
    ============================== */
@@ -189,10 +212,10 @@ html {
 
 /* اليوم الحالي (Today) */
 .islamic-calendar .calendar-day.day-today {
-  background: linear-gradient(135deg, var(--bs-primary), var(--bs-purple));
-  color: #9b9a9a !important;
+  background: linear-gradient(135deg, var(--primary-gold), var(--primary-dark-gold));
+  color: #ffffff !important;
   border: none;
-  box-shadow: 0 0.55rem 1.2rem rgba(var(--bs-primary-rgb), .45);
+  box-shadow: 0 0.55rem 1.2rem rgba(212, 165, 116, .45);
 }
 
 .islamic-calendar .calendar-day.day-today .small {
@@ -239,26 +262,30 @@ html[data-bs-theme="dark"] .islamic-calendar .today-badge {
   background: var(--bs-light);
   color: var(--bs-primary);
 }
+
 /* Hero section (مرحباً بك في طمانينة) */
 .home-hero-gradient {
-  background: linear-gradient(135deg, #0d6efd, #6610f2);
-  color: #a59a9a;               /* ✅ يثبت النص دايماً أبيض */
+  background: var(--hero-gradient);
+  color: #ffffff;
+  /* ✅ white text for readability */
 }
 
 /* في الوضع الداكن نخلي الخلفية أغمق شوي لكن النص يبقى واضح */
 html[data-bs-theme="dark"] .home-hero-gradient {
-  background: radial-gradient(circle at top, #3b82f6, #1f2937);
-  color: #837e7e;
+  background: radial-gradient(circle at top, #5a7c5c, #2d3a3d);
+  color: #ffffff;
 }
 
 /* لو حاب تصغّر النص الفرعي شوية */
 .home-hero-gradient p {
   opacity: 0.95;
 }
+
 /* زر الصعود للأعلى - تصميم احترافي */
 .back-to-top-btn {
   position: fixed;
-  bottom: 20px;              /* ديسكتوب: قريب من تحت */
+  bottom: 20px;
+  /* ديسكتوب: قريب من تحت */
   right: 20px;
   width: 55px;
   height: 55px;
@@ -268,7 +295,8 @@ html[data-bs-theme="dark"] .home-hero-gradient {
   color: white;
   border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
-  display: none;             /* بيظهر بالـ JS لما scrollY > 300 */
+  display: none;
+  /* بيظهر بالـ JS لما scrollY > 300 */
   justify-content: center;
   align-items: center;
   z-index: 3000;
@@ -290,6 +318,7 @@ html[data-bs-theme="dark"] .home-hero-gradient {
     transform: scale(0.7);
     opacity: 0;
   }
+
   to {
     transform: scale(1);
     opacity: 1;
@@ -299,16 +328,21 @@ html[data-bs-theme="dark"] .home-hero-gradient {
 /* 📱 على الموبايل / التابلت: نرفعه فوق شريط الـ bottom nav */
 @media (max-width: 992px) {
   .back-to-top-btn {
-    bottom: 60px;  /* ارفعها لو لسه متغطية (مثلاً 100 أو 110px) */
+    bottom: 74px;
+    /* ارفعها لو لسه متغطية (مثلاً 100 أو 110px) */
   }
 }
+
 /* زر الشات العائم في اليسار لجميع الأجهزة */
 .floating-chat-btn {
   width: 60px;
   height: 60px;
-  bottom: 20px;        /* مكان واضح في كل الأجهزة */
-  left: 20px;          /* زر في اليسار */
-  right: auto;         /* إلغاء اليمين */
+  bottom: 20px;
+  /* مكان واضح في كل الأجهزة */
+  left: 20px;
+  /* زر في اليسار */
+  right: auto;
+  /* إلغاء اليمين */
   z-index: 1050;
   position: fixed;
   transition: transform 0.25s ease, opacity 0.25s ease;
@@ -317,8 +351,129 @@ html[data-bs-theme="dark"] .home-hero-gradient {
 /* على الموبايل + التابلت — نرفعه للأعلى قليلًا بسبب الـ bottom nav */
 @media (max-width: 992px) {
   .floating-chat-btn {
-    bottom: 57px;     /* رفعه فوق bottom navigation */
+    bottom: 70px;
+    /* رفعه فوق bottom navigation */
   }
 }
 
 
+/* Navigation Card Buttons - Hover Effects */
+.nav-card-btn {
+  transition: all 0.3s ease !important;
+  background: var(--bs-body-secondary) !important;
+}
+
+.nav-card-btn:hover {
+  transform: translateY(-5px) !important;
+  box-shadow: 0 15px 35px rgba(212, 165, 116, 0.25) !important;
+  background: linear-gradient(135deg, rgba(212, 165, 116, 0.1), rgba(125, 157, 127, 0.1)) !important;
+}
+
+.nav-card-btn:active {
+  transform: translateY(-2px) !important;
+}
+
+/* Mobile Navigation Styles */
+@media (max-width: 767px) {
+  .main-tabs-wrapper {
+    margin-left: -1rem;
+    margin-right: -1rem;
+  }
+
+  .main-tabs {
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    padding: 0.5rem !important;
+  }
+
+  .main-tabs::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  .main-tabs .nav-item {
+    flex: 0 0 auto;
+  }
+
+  .main-tabs .nav-link {
+    padding: 0.75rem 1rem !important;
+    font-size: 0.9rem;
+  }
+}
+
+/* Tablet Styles */
+@media (min-width: 768px) and (max-width: 991px) {
+  .main-tabs .nav-link {
+    font-size: 0.95rem;
+    padding: 0.75rem 1.25rem;
+  }
+}
+
+/* Bottom Navigation Bar - Mobile & Tablet */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--bs-body-bg);
+  border-top: 1px solid var(--bs-border-color);
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1030;
+  padding: 0.5rem 0;
+}
+
+.bottom-nav .nav {
+  margin: 0;
+  padding: 0;
+}
+
+.bottom-nav-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 0.25rem !important;
+  color: var(--bs-secondary-color);
+  border: none !important;
+  background: transparent !important;
+  transition: all 0.2s ease;
+  min-height: 60px;
+}
+
+.bottom-nav-link:hover {
+  color: var(--primary-gold);
+  background: transparent !important;
+}
+
+.bottom-nav-link.active {
+  color: var(--primary-gold) !important;
+  background: transparent !important;
+  font-weight: 600;
+}
+
+.bottom-nav-link i,
+.bottom-nav-link span:not(.small) {
+  font-size: 1.25rem;
+}
+
+.bottom-nav-link .small {
+  font-size: 0.7rem;
+  margin-top: 0.25rem;
+}
+
+/* Bottom nav dropdown menu positioning */
+.bottom-nav .dropdown-menu {
+  position: absolute;
+  bottom: 100%;
+  top: auto;
+  margin-bottom: 0.5rem;
+}
+
+/* Add padding to bottom of main content to prevent overlap with bottom nav */
+@media (max-width: 991px) {
+  main {
+    padding-bottom: 80px !important;
+  }
+}

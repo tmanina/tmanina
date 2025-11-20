@@ -407,7 +407,7 @@ async function copyDhikr(zekr: string) {
 }
 
 // ====== الكومبوننت الرئيسي ======
-export function MorningEvening() {
+export function MorningEvening({ type }: { type?: "morning" | "evening" }) {
   const [remaining, setRemaining] = React.useState<RemainingMap>(getInitialRemaining)
 
   const handleDhikrClick = (key: string, maxRepeat: number) => {
@@ -448,11 +448,10 @@ export function MorningEvening() {
           <div
             key={key}
             onClick={() => handleDhikrClick(key, dhikr.repeat)}
-            className={`p-3 p-md-4 rounded-4 border ${
-              isDone
-                ? "border-success bg-success bg-opacity-10"
-                : "border border-body-secondary bg-body"
-            }`}
+            className={`p-3 p-md-4 rounded-4 border ${isDone
+              ? "border-success bg-success bg-opacity-10"
+              : "border border-body-secondary bg-body"
+              }`}
             style={{
               cursor: "pointer",
               transition: "all 0.25s ease",
@@ -519,6 +518,48 @@ export function MorningEvening() {
     </div>
   )
 
+  // If type is specified, show only that specific adhkar type without tabs
+  if (type) {
+    const adhkarList = type === "morning" ? morningAdhkar : eveningAdhkar
+    const prefix = type
+    const title = type === "morning" ? morningTitle : eveningTitle
+    const icon = type === "morning" ? "sun" : "moon"
+    const gradient = type === "morning"
+      ? "linear-gradient(135deg, #eab308, #facc15)"
+      : "linear-gradient(135deg, #5b21b6, #9333ea)"
+
+    return (
+      <div className="row justify-content-center">
+        <div className="col-12 col-xl-10">
+          {/* زر إعادة تعيين العدادات */}
+          <div className="d-flex justify-content-end mb-3">
+            <button
+              type="button"
+              className="btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-2"
+              onClick={resetAllCounters}
+            >
+              <i className="fas fa-rotate-right" />
+              إعادة تعيين العدادات
+            </button>
+          </div>
+
+          <div className="card border-0 shadow-lg rounded-4 overflow-hidden">
+            <div className="p-4 text-white" style={{ background: gradient }}>
+              <h2 className="h3 mb-0 d-flex align-items-center gap-2">
+                <i className={`fas fa-${icon}`} />
+                {title}
+              </h2>
+            </div>
+            <div className="card-body p-3 p-md-4">
+              {renderAdhkar(adhkarList, prefix)}
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Original component with tabs (for backward compatibility)
   return (
     <div className="row justify-content-center">
       <div className="col-12 col-xl-10">
