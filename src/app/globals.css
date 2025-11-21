@@ -1,26 +1,37 @@
+/* Tailwind CSS directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* Custom styles */
-:root {
-  /* Primary palette - warm gold & sage green */
-  --primary-gold: #d4a574;
-  --primary-dark-gold: #b8885a;
-  --sage-green: #7d9d7f;
-  --sage-dark: #5a7c5c;
+@layer base {
+  :root {
+    /* Primary palette - warm gold & sage green */
+    --primary-gold: #d4a574;
+    --primary-dark-gold: #b8885a;
+    --sage-green: #7d9d7f;
+    --sage-dark: #5a7c5c;
 
-  /* Secondary palette - indigo & cream */
-  --indigo-primary: #4a5d7e;
-  --indigo-light: #6b8cae;
-  --cream-bg: #f9f6f2;
-  --cream-card: #ffffff;
+    /* Secondary palette - indigo & cream */
+    --indigo-primary: #4a5d7e;
+    --indigo-light: #6b8cae;
+    --cream-bg: #f9f6f2;
+    --cream-card: #ffffff;
 
-  /* Gradients */
-  --primary-gradient: linear-gradient(135deg, #d4a574 0%, #7d9d7f 100%);
-  --hero-gradient: linear-gradient(135deg, #4a5d7e 0%, #7d9d7f 100%);
+    /* Gradients */
+    --primary-gradient: linear-gradient(135deg, #d4a574 0%, #7d9d7f 100%);
+    --hero-gradient: linear-gradient(135deg, #4a5d7e 0%, #7d9d7f 100%);
+  }
 }
 
 body {
   font-family: Arial, Helvetica, sans-serif;
-  background: linear-gradient(135deg, #f9f6f2 0%, #ede8e0 100%);
+  background: linear-gradient(135deg, #f5f1ea 0%, #e8e3d8 100%);
   min-height: 100vh;
+}
+
+[data-bs-theme="light"] body {
+  background: linear-gradient(135deg, #f5f1ea 0%, #e8e3d8 50%, #f0ebe0 100%);
 }
 
 [data-bs-theme="dark"] body {

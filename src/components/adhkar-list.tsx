@@ -9,15 +9,44 @@ import { sleepAdhkarConfig } from "./adhkar/sleep-adhkar-data"
 
 export function AdhkarList() {
     const [selectedAdhkar, setSelectedAdhkar] = React.useState<string | null>(null)
+    const [startTime, setStartTime] = React.useState<number | null>(null)
 
     const handleCardClick = (adhkarType: string) => {
         setSelectedAdhkar(adhkarType)
+        setStartTime(Date.now())
         window.scrollTo({ top: 0, behavior: 'smooth' })
     }
 
     const handleBackToCards = () => {
         setSelectedAdhkar(null)
+        setStartTime(null)
     }
+
+    // Track time spent on adhkar page
+    React.useEffect(() => {
+        if (!selectedAdhkar || !startTime) return
+
+        const checkTimer = setInterval(() => {
+            const elapsedTime = Date.now() - startTime
+            const oneMinute = 60 * 1000 // 60 seconds
+
+            if (elapsedTime >= oneMinute) {
+                // Mark as read
+                const today = new Date().toDateString()
+
+                if (selectedAdhkar === 'morning') {
+                    localStorage.setItem('lastMorningAdhkarRead', today)
+                } else if (selectedAdhkar === 'evening') {
+                    localStorage.setItem('lastEveningAdhkarRead', today)
+                }
+
+                // Clear interval after marking
+                clearInterval(checkTimer)
+            }
+        }, 1000) // Check every second
+
+        return () => clearInterval(checkTimer)
+    }, [selectedAdhkar, startTime])
 
     return (
         <div className="adhkar-page">
@@ -189,7 +218,7 @@ export function AdhkarList() {
                                 <div className="adhkar-icon">
                                     <i className="fas fa-mosque"></i>
                                 </div>
-                                <h3 className="adhkar-title">اذكار ما بعد الصلاة</h3>
+                                <h3 className="adhkar-title">اذكار بعد الصلاة</h3>
                                 <p className="adhkar-subtitle mb-4">أذكار وتسبيح بعد الصلاة</p>
                                 <button className="btn view-btn" type="button">
                                     <i className="fas fa-book-open me-2"></i>

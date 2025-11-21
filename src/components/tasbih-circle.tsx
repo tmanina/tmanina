@@ -8,44 +8,34 @@ type TasbihButton = {
 }
 
 export function TasbihCircle() {
-    const buttonSets: TasbihButton[][] = [
-        [
-            { id: "subhan", text: "سبحان الله" },
-            { id: "hamd", text: "الحمد لله" },
-            { id: "akbar", text: "الله أكبر" },
-        ],
-        [
-            { id: "tahlil", text: "لا إله إلا الله" },
-            { id: "lahawla", text: "لا حول ولا قوة إلا بالله" },
-            { id: "istighfar", text: "استغفر الله" },
-        ],
+    // All 6 buttons in one array
+    const allButtons: TasbihButton[] = [
+        { id: "subhan", text: "سبحان الله" },
+        { id: "hamd", text: "الحمد لله" },
+        { id: "akbar", text: "الله أكبر" },
+        { id: "tahlil", text: "لا إله إلا الله" },
+        { id: "lahawla", text: "لا حول ولا قوة إلا بالله" },
+        { id: "istighfar", text: "استغفر الله" },
     ]
 
-    const [currentSetIndex, setCurrentSetIndex] = React.useState(0)
-    const [selectedDhikr, setSelectedDhikr] = React.useState<string>("subhan")
+    const [buttons, setButtons] = React.useState<TasbihButton[]>(allButtons)
     const [clickCount, setClickCount] = React.useState(0)
     const [isPressed, setIsPressed] = React.useState(false)
     const [allCompleted, setAllCompleted] = React.useState(false)
     const [completedDhikrs, setCompletedDhikrs] = React.useState<string[]>([])
 
     const TARGET = 3 // 3 total clicks
-    const buttons = buttonSets[currentSetIndex]
+    const selectedDhikr = buttons[0].id // Always the first button
 
-    const handleToggleSet = () => {
-        const newSetIndex = currentSetIndex === 0 ? 1 : 0
-        setCurrentSetIndex(newSetIndex)
-        // Set first button of new set as selected
-        setSelectedDhikr(buttonSets[newSetIndex][0].id)
+    const handleRotateButtons = () => {
+        // Move first button to the end (rotation)
+        setButtons((prev) => {
+            const [first, ...rest] = prev
+            return [...rest, first]
+        })
+        // Reset counter when rotating
         setClickCount(0)
-        setAllCompleted(false) // Reset completion status when changing sets
-        setCompletedDhikrs([]) // Clear completed dhikrs for the new set
-    }
-
-    const handleButtonClick = (dhikrId: string) => {
-        if (!completedDhikrs.includes(dhikrId)) {
-            setSelectedDhikr(dhikrId)
-            setClickCount(0) // Reset count when switching dhikr
-        }
+        // Do NOT reset completed dhikrs here, so we can track progress of all 6
     }
 
     const handleCircleClick = () => {
@@ -53,9 +43,9 @@ export function TasbihCircle() {
 
         // Animation
         setIsPressed(true)
-        setTimeout(() => setIsPressed(false), 120)
+        setTimeout(() => setIsPressed(false), 200)
 
-        // Vibration on each click
+        // Vibration on each click (always enabled)
         if (navigator.vibrate) navigator.vibrate(50)
 
         const newCount = clickCount + 1
@@ -64,24 +54,21 @@ export function TasbihCircle() {
             // Completed this dhikr
             setClickCount(TARGET)
 
-            // Strong vibration on completion
+            // Strong vibration on completion (always enabled)
             if (navigator.vibrate) navigator.vibrate([100, 50, 100])
 
             // Mark as completed
             const newCompleted = [...completedDhikrs, selectedDhikr]
             setCompletedDhikrs(newCompleted)
 
-            // Auto-advance to next dhikr after 500ms
+            // Auto-rotate to next dhikr after 500ms
             setTimeout(() => {
-                const currentIndex = buttons.findIndex(b => b.id === selectedDhikr)
-                const nextButton = buttons.find((b, idx) => idx > currentIndex && !newCompleted.includes(b.id))
-
-                if (nextButton) {
-                    setSelectedDhikr(nextButton.id)
-                    setClickCount(0)
-                } else {
-                    // All completed in current set
+                if (newCompleted.length >= 6) {
+                    // All 6 completed
                     setAllCompleted(true)
+                } else {
+                    // Rotate to next dhikr
+                    handleRotateButtons()
                 }
             }, 500)
         } else {
@@ -92,11 +79,11 @@ export function TasbihCircle() {
     const handleReset = () => {
         setClickCount(0)
         setAllCompleted(false)
-        setSelectedDhikr(buttons[0].id)
+        setButtons(allButtons) // Reset to original order
         setCompletedDhikrs([])
     }
 
-    const selectedButton = buttons.find((b) => b.id === selectedDhikr)
+    const selectedButton = buttons[0] // Always the first button
 
     return (
         <div className="col-12">
@@ -110,18 +97,18 @@ export function TasbihCircle() {
         
         @keyframes shake {
           0%, 100% { transform: translateX(0) scale(1); }
-          10%, 30%, 50%, 70%, 90% { transform: translateX(-2px) scale(0.98); }
-          20%, 40%, 60%, 80% { transform: translateX(2px) scale(0.98); }
+          10%, 30%, 50%, 70%, 90% { transform: translateX(-4px) scale(0.95); }
+          20%, 40%, 60%, 80% { transform: translateX(4px) scale(0.95); }
         }
         
         @keyframes pulse {
           0% { transform: scale(1); }
-          50% { transform: scale(0.95); }
+          50% { transform: scale(0.92); }
           100% { transform: scale(1); }
         }
         
         .circle-shake {
-          animation: shake 0.3s ease-in-out, pulse 0.3s ease-in-out;
+          animation: shake 0.4s ease-in-out, pulse 0.4s ease-in-out;
         }
         
         @media (max-width: 768px) {
@@ -157,11 +144,11 @@ export function TasbihCircle() {
                     {!allCompleted ? (
                         <div className="tasbih-container">
                             {/* Buttons Column - Always Left */}
-                            <div style={{ minWidth: "140px", position: "relative" }}>
-                                {/* Toggle button in corner */}
+                            <div style={{ minWidth: "160px", position: "relative" }}>
+                                {/* Rotation button in corner */}
                                 <button
                                     type="button"
-                                    onClick={handleToggleSet}
+                                    onClick={handleRotateButtons}
                                     className="btn btn-sm btn-outline-secondary rounded-circle"
                                     style={{
                                         position: "absolute",
@@ -173,35 +160,34 @@ export function TasbihCircle() {
                                         zIndex: 10,
                                         transition: "all 0.3s ease",
                                     }}
-                                    title="تبديل الأذكار"
+                                    title="تدوير الأذكار"
                                 >
-                                    <i className="fas fa-sync-alt" style={{ fontSize: "0.75rem" }}></i>
+                                    <i className="fas fa-arrow-rotate-right" style={{ fontSize: "0.75rem" }}></i>
                                 </button>
 
                                 <div className="d-flex flex-column gap-2">
-                                    {buttons.map((button) => (
-                                        <button
+                                    {buttons.slice(0, 3).map((button, index) => (
+                                        <div
                                             key={button.id}
-                                            type="button"
-                                            onClick={() => handleButtonClick(button.id)}
-                                            disabled={completedDhikrs.includes(button.id)}
-                                            className={`btn rounded-pill ${button.id === selectedDhikr
-                                                ? "gradient-bg text-white"
-                                                : completedDhikrs.includes(button.id)
-                                                    ? "btn-success"
-                                                    : "btn-outline-primary"
+                                            className={`btn rounded-pill ${index === 0
+                                                    ? "gradient-bg text-white"
+                                                    : completedDhikrs.includes(button.id)
+                                                        ? "btn-success"
+                                                        : "btn-outline-secondary"
                                                 }`}
                                             style={{
                                                 transition: "all 0.3s ease",
-                                                fontSize: "0.9rem",
+                                                fontSize: "0.85rem",
                                                 fontWeight: "600",
-                                                padding: "0.5rem 1.5rem",
-                                                opacity: completedDhikrs.includes(button.id) ? 0.7 : 1,
+                                                padding: "0.4rem 1.2rem",
+                                                opacity: completedDhikrs.includes(button.id) ? 0.6 : 1,
+                                                cursor: "default",
+                                                pointerEvents: "none",
                                             }}
                                         >
                                             {button.text}
                                             {completedDhikrs.includes(button.id) && <i className="fas fa-check ms-2"></i>}
-                                        </button>
+                                        </div>
                                     ))}
                                 </div>
                             </div>
@@ -242,7 +228,7 @@ export function TasbihCircle() {
                                                 key={`bg-${segmentIndex}`}
                                                 d={`M ${x1} ${y1} A ${radius} ${radius} 0 0 1 ${x2} ${y2}`}
                                                 fill="none"
-                                                stroke="#e5e7eb"
+                                                stroke="#d4c4b0"
                                                 strokeWidth={strokeWidth}
                                                 strokeLinecap="round"
                                             />
@@ -290,11 +276,12 @@ export function TasbihCircle() {
                                 {/* Center clickable circle with dhikr name */}
                                 <div
                                     onClick={handleCircleClick}
-                                    className={`rounded-circle shadow-lg bg-body inner-circle d-flex align-items-center justify-content-center ${isPressed ? "circle-shake" : ""
+                                    className={`rounded-circle shadow-lg inner-circle d-flex align-items-center justify-content-center ${isPressed ? "circle-shake" : ""
                                         }`}
                                     style={{
                                         width: "220px",
                                         height: "220px",
+                                        backgroundColor: 'var(--bs-body-bg)',
                                         border: "3px solid var(--bs-border-color)",
                                         cursor: "pointer",
                                         userSelect: "none",
@@ -312,11 +299,8 @@ export function TasbihCircle() {
                         <>
                             {/* Completion Message */}
                             <div className="text-center py-5">
-                                <div className="mb-4">
-                                    <i className="fas fa-check-circle text-success" style={{ fontSize: "5rem" }}></i>
-                                </div>
-                                <h2 className="mb-3 gradient-text fw-bold">تم بحمد الله</h2>
-                                <p className="text-body-secondary mb-4">أكملت حلقة التسبيح كاملة</p>
+                                <h2 className="mb-5 gradient-text fw-bold" style={{ fontSize: "2.5rem" }}>تم بحمد الله</h2>
+                                <br />
 
                                 <button
                                     type="button"

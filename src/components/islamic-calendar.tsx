@@ -132,9 +132,9 @@ export function IslamicCalendar() {
 
       <div className="card-body pt-2 pb-3">
         {/* Week days row */}
-        <div className="calendar-grid mb-2 small text-muted text-center fw-semibold">
+        <div className="calendar-grid mb-2 text-muted text-center fw-semibold" style={{ fontSize: '0.75rem' }}>
           {WEEK_DAYS.map((day) => (
-            <div key={day} className="py-1">
+            <div key={day} className="py-1" style={{ fontSize: 'clamp(0.65rem, 2vw, 0.85rem)' }}>
               {day}
             </div>
           ))}

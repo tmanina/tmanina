@@ -17,7 +17,7 @@ export default function Home() {
   React.useEffect(() => {
     const timer = setTimeout(() => {
       setShowSplash(false)
-    }, 1000)
+    }, 3000) // 3 seconds as required
     return () => clearTimeout(timer)
   }, [])
 
@@ -228,14 +228,14 @@ export default function Home() {
                           const adhkarListTab = document.getElementById('adhkar-list-tab') as HTMLButtonElement
                           if (adhkarListTab) adhkarListTab.click()
 
-                          // Then activate morning sub-tab after a short delay
+                          // Then click morning adhkar card
                           setTimeout(() => {
-                            const morningTab = document.querySelector('a[href="#adhkar-morning"]') as HTMLElement
-                            if (morningTab) {
-                              morningTab.click()
+                            const morningCard = document.querySelector('.adhkar-card-morning') as HTMLElement
+                            if (morningCard) {
+                              morningCard.click()
                               window.scrollTo({ top: 0, behavior: 'smooth' })
                             }
-                          }, 100)
+                          }, 150)
                         }}
                         type="button"
                         style={{ transition: 'all 0.3s ease' }}
@@ -256,14 +256,14 @@ export default function Home() {
                           const adhkarListTab = document.getElementById('adhkar-list-tab') as HTMLButtonElement
                           if (adhkarListTab) adhkarListTab.click()
 
-                          // Then activate evening sub-tab after a short delay
+                          // Then click evening adhkar card
                           setTimeout(() => {
-                            const eveningTab = document.querySelector('a[href="#adhkar-evening"]') as HTMLElement
-                            if (eveningTab) {
-                              eveningTab.click()
+                            const eveningCard = document.querySelector('.adhkar-card-evening') as HTMLElement
+                            if (eveningCard) {
+                              eveningCard.click()
                               window.scrollTo({ top: 0, behavior: 'smooth' })
                             }
-                          }, 100)
+                          }, 150)
                         }}
                         type="button"
                         style={{ transition: 'all 0.3s ease' }}

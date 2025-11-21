@@ -42,7 +42,7 @@ function incrementDailyDhikr(step: number) {
   if (raw) {
     try {
       data = JSON.parse(raw)
-    } catch {}
+    } catch { }
   }
 
   data.history[today] = (data.history[today] ?? 0) + step
@@ -61,10 +61,25 @@ export function DhikrCounter() {
   const [totals, setTotals] = React.useState<Record<string, number>>({})
   const [hasVibrated, setHasVibrated] = React.useState(false)
   const [isPressed, setIsPressed] = React.useState(false)
+  const [vibrationEnabled, setVibrationEnabled] = React.useState(true)
 
   const remaining = target - count
   const totalForCurrent = totals[selectedId] ?? 0
   const progress = Math.min((count / target) * 100, 100)
+
+  // Load vibration preference from localStorage
+  React.useEffect(() => {
+    const savedPref = localStorage.getItem('vibrationEnabled')
+    if (savedPref !== null) {
+      setVibrationEnabled(savedPref === 'true')
+    }
+  }, [])
+
+  const toggleVibration = () => {
+    const newValue = !vibrationEnabled
+    setVibrationEnabled(newValue)
+    localStorage.setItem('vibrationEnabled', String(newValue))
+  }
 
   // إعادة الضبط عند تغيير الذكر
   React.useEffect(() => {
@@ -80,20 +95,25 @@ export function DhikrCounter() {
 
   // وظيفة التسبيح
   const handleTasbeehTap = () => {
-    // أنيميشن
+    // أنيميشن محسّنة
     setIsPressed(true)
-    setTimeout(() => setIsPressed(false), 120)
+    setTimeout(() => setIsPressed(false), 200)
 
     if (count >= target) return
+
+    // Vibration on each tap (if enabled)
+    if (vibrationEnabled && navigator.vibrate) {
+      navigator.vibrate(40)
+    }
 
     incrementDailyDhikr(1)
 
     setCount((prev) => {
       const newValue = prev + 1
 
-      // اهتزاز عند اكتمال الهدف لأول مرة
+      // اهتزاز عند اكتمال الهدف لأول مرة (if enabled)
       if (newValue === target && !hasVibrated) {
-        if (navigator.vibrate) navigator.vibrate(200)
+        if (vibrationEnabled && navigator.vibrate) navigator.vibrate(200)
         setHasVibrated(true)
       }
 
@@ -153,24 +173,68 @@ export function DhikrCounter() {
               <h3 className="h4 mb-2">{selectedDhikr.text}</h3>
               <p className="small text-body-secondary">{selectedDhikr.label}</p>
 
-              <div className="d-flex justify-content-between small text-body-secondary">
+              <div className="d-flex justify-content-between align-items-center small text-body-secondary">
                 <div>المتبقي: {remaining}</div>
                 <div>إجمالي التسبيح: {totalForCurrent}</div>
+
+                {/* Vibration Toggle - Icon Only */}
+                <button
+                  type="button"
+                  onClick={toggleVibration}
+                  className="btn btn-sm rounded-circle p-0"
+                  style={{
+                    width: '32px',
+                    height: '32px',
+                    backgroundColor: 'transparent',
+                    border: `2px solid ${vibrationEnabled ? 'var(--bs-primary)' : 'var(--bs-secondary)'}`,
+                    color: vibrationEnabled ? 'var(--bs-primary)' : 'var(--bs-secondary)',
+                    transition: 'all 0.3s ease',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = vibrationEnabled ? 'var(--bs-primary)' : 'var(--bs-secondary)'
+                    e.currentTarget.style.color = 'white'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'transparent'
+                    e.currentTarget.style.color = vibrationEnabled ? 'var(--bs-primary)' : 'var(--bs-secondary)'
+                  }}
+                  title={vibrationEnabled ? "تعطيل الاهتزاز" : "تفعيل الاهتزاز"}
+                  aria-label={vibrationEnabled ? "تعطيل الاهتزاز" : "تفعيل الاهتزاز"}
+                >
+                  <i
+                    className={`fas ${vibrationEnabled ? 'fa-mobile-screen-button' : 'fa-mobile-screen'}`}
+                    style={{ fontSize: '0.85rem' }}
+                  ></i>
+                </button>
               </div>
             </div>
 
             {/* الدائرة التفاعلية */}
             <div className="d-flex justify-content-center">
+              <style jsx>{`
+                @keyframes shake-tap {
+                  0%, 100% { transform: scale(1); }
+                  25% { transform: scale(0.92) rotate(-2deg); }
+                  50% { transform: scale(0.88) rotate(2deg); }
+                  75% { transform: scale(0.92) rotate(-1deg); }
+                }
+                
+                .tap-shake {
+                  animation: shake-tap 0.3s ease-out;
+                }
+              `}</style>
+
               <div
                 onClick={handleTasbeehTap}
-                className={`rounded-circle d-flex align-items-center justify-content-center shadow-lg bg-body-secondary position-relative ${
-                  isPressed ? "scale-95" : "scale-100"
-                }`}
+                className={`rounded-circle d-flex align-items-center justify-content-center shadow-lg bg-body-secondary position-relative ${isPressed ? "tap-shake" : ""
+                  }`}
                 style={{
                   width: "220px",
                   height: "220px",
                   border: "8px solid var(--bs-body-bg)",
-                  transition: "transform 0.1s ease",
                   cursor: "pointer",
                   userSelect: "none",
                   touchAction: "manipulation",
@@ -206,9 +270,8 @@ export function DhikrCounter() {
                   key={num}
                   type="button"
                   onClick={() => handleQuickTargetChange(num)}
-                  className={`btn btn-sm rounded-pill px-3 ${
-                    target === num ? "gradient-bg text-white" : "btn-outline-primary"
-                  }`}
+                  className={`btn btn-sm rounded-pill px-3 ${target === num ? "gradient-bg text-white" : "btn-outline-primary"
+                    }`}
                 >
                   {num}
                 </button>

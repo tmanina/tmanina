@@ -1,14 +1,41 @@
 import type { Metadata } from "next"
 import "./globals.css"
-import { Inter } from "next/font/google"
+import { Cairo, Amiri, Inter } from "next/font/google"
 import Script from "next/script"
 import { Footer } from "@/components/footer"
 
-const inter = Inter({ subsets: ["latin"] })
+// Arabic fonts
+const cairo = Cairo({
+  subsets: ["arabic", "latin"],
+  variable: "--font-cairo",
+  display: "swap",
+})
+
+const amiri = Amiri({
+  weight: ["400", "700"],
+  subsets: ["arabic", "latin"],
+  variable: "--font-amiri",
+  display: "swap",
+})
+
+// Latin/UI font
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+})
 
 export const metadata: Metadata = {
-  title: "طمأنينة",
-  description: "تطبيقك الشامل للأذكار والتقويم الإسلامي",
+  title: "طمأنينة - رفيقك الروحاني",
+  description: "تطبيقك الشامل للأذكار، مواقيت الصلاة، والتقويم الإسلامي. تقرّب إلى الله بالأذكار والعبادات في مكان واحد.",
+  keywords: ["أذكار", "صلاة", "تقويم إسلامي", "قرآن", "دعاء", "تسبيح"],
+  authors: [{ name: "طمأنينة" }],
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 5,
+    userScalable: true,
+  },
 }
 
 export default function RootLayout({
@@ -40,7 +67,8 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
 
-      <body className={`${inter.className} d-flex flex-column min-vh-100`}>
+      <body className={`${cairo.variable} ${amiri.variable} ${inter.variable} d-flex flex-column min-vh-100`} style={{ fontFamily: "var(--font-cairo), Arial, sans-serif" }}>
+
         {/* المحتوى الرئيسي */}
         <main className="flex-fill">
           {children}
